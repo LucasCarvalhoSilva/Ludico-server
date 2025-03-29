@@ -13,12 +13,12 @@ class Login {
 
       console.log(userLogIn)
       if(!userLogIn) {
-        return next(new UserOrPasswordInvalid().sendResponse());
+        return next(new UserOrPasswordInvalid().sendResponse(res));
       }
 
       const passwordIsValid = await bcrypt.compare(password, userLogIn.password);
       if(!passwordIsValid) {
-        return next(new UserOrPasswordInvalid().sendResponse());
+        return next(new UserOrPasswordInvalid().sendResponse(res));
       }
       
       if (!userLogIn.role) {

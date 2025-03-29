@@ -5,9 +5,11 @@ import cors from 'cors';
 
 // Configurar o CORS
 const corsOptions = {
-  origin: 'http://localhost:5173', // Substitua pelo endereço do seu frontend (Next.js)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+  origin: '*', // Specify the exact origin
+  credentials: true, // Allow credentials (cookies, authorization headers, etc)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 };
 
 const connection = await databaseConnection();
@@ -23,6 +25,7 @@ connection.once("open", () => {
 const app = express();
 
 app.use(cors(corsOptions));
+
 routes(app);
 
 
