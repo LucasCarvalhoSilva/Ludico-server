@@ -1,13 +1,15 @@
-import NotFoundError from "../errors/NotFoundError.js";
-import { participator } from "../models/index.js";
+import { lent } from "../models/index.js";
 
-class Participator {
-  static async createParticipator(req, res, next) {
+class Lent {
+  static async createLent(req, res, next) {
     try {
-      const newparticipator = req.body;
+      const newLent = req.body;
       
-      const createdparticipator = await participator.create(newparticipator);
-      res.status(200).json(createdparticipator);
+      newLent.lentTime = new Date();
+      newLent.status = "lent"
+
+      const createdLent = await lent.create(newLent);
+      res.status(200).json(createdLent);
     }catch(error) {
       next(error);
     }
@@ -68,4 +70,4 @@ class Participator {
   }
 }
 
-export default Participator
+export default Lent

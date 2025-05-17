@@ -12,6 +12,7 @@ import scapeRoomHistory from "./ScapeRoomHistory.js";
 import scapeRoomSession from "./ScapeRoomSession.js";
 import user from "./User.js";
 import userRole from "./UserRole.js";
+import lent from "./Lent.js";
 
 export {
   activity,
@@ -25,5 +26,6 @@ export {
   scapeRoomHistory, 
   scapeRoomSession, 
   user, 
-  userRole
+  userRole,
+  lent
 }
