@@ -5,19 +5,20 @@ import { ceremony } from "../models/index.js";
 class Ceremony {
   static async createCeremony(req, res, next) {
     try {
-      console.log("Está chegando aqui")
       const newCeremony = req.body;
-      
+      console.log("Está chegando aqui", newCeremony)
+
       const createdCeremony = await ceremony.create(newCeremony);
       res.status(200).json(createdCeremony);
-    }catch(error) {
+    } catch (error) {
+      console.log(error);
       res.status(500).json(error);
     }
   }
 
   static async listAllCeremonies(req, res, next) {
-    try{
-      
+    try {
+
       const boardGamesList = await ceremony
         .find({})
         .populate(["participators"])
@@ -27,8 +28,8 @@ class Ceremony {
         .exec();
 
       res.status(200).json(boardGamesList)
-      
-    }catch(error) {
+
+    } catch (error) {
       next(error)
     }
   }
@@ -38,18 +39,54 @@ class Ceremony {
       const id = req.params.id;
 
       const boardGameFound = await ceremony
-      .findById(id)
-      .populate(["participators"])
-      .populate(["oneShotAvailables"])
-      .populate(["boardGamesAvailables"])
-      .populate(["scapeRoomSessions"])
-      .exec();
+        .findById(id)
+        .populate(["participators"])
+        .populate(["oneShotAvailables"])
+        .populate(["boardGamesAvailables"])
+        .populate(["scapeRoomSessions"])
+        .exec();
 
       res.status(200).json(boardGameFound);
 
 
-    }catch {
+    } catch {
       next(error)
+    }
+  }
+
+  static async updateCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
+      if (ceremonyFounded) {
+        ceremonyFounded.eventName = req.body.eventName;
+        ceremonyFounded.eventDate = req.body.eventDate;
+        ceremonyFounded.eventCity = req.body.eventCity;
+        ceremonyFounded.eventPlace = req.body.eventPlace;
+        ceremonyFounded.eventStartTime = req.body.eventStartTime;
+        ceremonyFounded.eventEndTime = req.body.eventEndTime;
+
+        await ceremonyFounded.save();
+        res.status(200).json(ceremonyFounded);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  }
+
+  static async deleteCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+
+      const deletedCeremony = await ceremony.findByIdAndDelete(ceremonyId);
+
+      if (deletedCeremony == null) {
+        next(new NotFoundError("Evento não encontrado"));
+      }
+      res.status(200).json({ message: "Evento apagado com sucesso!" });
+    } catch (error) {
+      next(error);
     }
   }
 }
