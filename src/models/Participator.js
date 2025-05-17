@@ -30,10 +30,7 @@ const participatorSchema = new Schema({
   },
   playedBgGames: [{
     type: mongoose.Schema.Types.ObjectId
-  }],
-  totalMinutesPlayed: {
-    type: Number
-  }
+  }]
 })
 
 const participator = mongoose.model("participator", participatorSchema)

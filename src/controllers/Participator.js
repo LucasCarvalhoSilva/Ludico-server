@@ -1,8 +1,8 @@
 import NotFoundError from "../errors/NotFoundError.js";
 import { participator } from "../models/index.js";
 
-class participator {
-  static async createparticipator(req, res, next) {
+class Participator {
+  static async createParticipator(req, res, next) {
     try {
       const newparticipator = req.body;
       
@@ -68,4 +68,4 @@ class participator {
   }
 }
 
-export default participator
+export default Participator

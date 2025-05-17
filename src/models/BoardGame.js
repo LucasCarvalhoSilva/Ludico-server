@@ -71,6 +71,10 @@ const boardGameSchema = new Schema({
   },
   isDisponible: {
     type: Boolean
+  },
+  playedTime: {
+    type: Number,
+    required: true
   }
 
 })
