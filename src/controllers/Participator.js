@@ -31,7 +31,7 @@ class Participator {
   static async listAllparticipators(req, res, next) {
     try{
       
-      const participatorsList = await participator.find({}).populate(["expansions"]).exec();
+      const participatorsList = await participator.find({}).exec();
 
       res.status(200).json(participatorsList)
       
@@ -41,28 +41,29 @@ class Participator {
   }
 
   static async searchparticipatorByID(req, res, next) {
+    console.log("Hello from searchparticipatorByID");
     try {
       const id = req.params.id;
 
-      const participatorFound = await participator.findById(id).populate(["expansions"]).exec();
+      const participatorFound = await participator.findById(id).exec();
 
       res.status(200).json(participatorFound);
-
-
-    }catch {
-      next(error)
+    }catch(error) {
+      res.status(500).json(error);
     }
   }
 
-  static async searchparticipatorByName(req, res, next) {
+  static async searchparticipatorByDocument(req, res, next) {
+    console.log(req.query);
     try{
 
-      const participatorName = req.query.name;
-      const participatorFound = await participator.findById(id).populate(["expansions"]).exec();
+      const identifier = req.query.identifier;
+      console.log(identifier);
+      const participatorFound = await participator.find({identifier}).exec();
   
       res.status(200).json(participatorFound);
     } catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
     
   }
