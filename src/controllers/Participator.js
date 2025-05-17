@@ -31,7 +31,7 @@ class Participator {
   static async listAllparticipators(req, res, next) {
     try{
       
-      const participatorsList = await participator.find({}).populate(["expansions"]).exec();
+      const participatorsList = await participator.find({}).exec();
 
       res.status(200).json(participatorsList)
       
@@ -44,13 +44,11 @@ class Participator {
     try {
       const id = req.params.id;
 
-      const participatorFound = await participator.findById(id).populate(["expansions"]).exec();
+      const participatorFound = await participator.findById(id).exec();
 
       res.status(200).json(participatorFound);
-
-
-    }catch {
-      next(error)
+    }catch(error) {
+      res.status(500).json(error);
     }
   }
 
