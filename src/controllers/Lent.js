@@ -1,4 +1,7 @@
 import { lent } from "../models/index.js";
+import gameAvailable from "../utils/gameAvailable.js";
+import changeGameDisponible from "../utils/changeGameDisponible.js";
+import playedTime from "../utils/playedTime.js";
 
 class Lent {
   static async createLent(req, res, next) {
@@ -8,65 +11,46 @@ class Lent {
       newLent.lentTime = new Date();
       newLent.status = "lent"
 
-      const createdLent = await lent.create(newLent);
-      res.status(200).json(createdLent);
-    }catch(error) {
-      next(error);
-    }
-  }
-
-  static async deleteparticipator(req, res, next) {
-    try{
-      const  participatorId  = req.params.id;
-      
-      const deletedGame = await participator.findByIdAndDelete(participatorId);
-
-      if( deletedGame == null ) {
-        next( new NotFoundError("participator não encontrado"));
+      if (gameAvailable(newLent.boardgameLent)) {
+        const createdLent = await lent.create(newLent);
+        changeGameDisponible(newLent.boardgameLent);
+        res.status(200).json(createdLent);
+      } else {
+        res.status(500).json("Jogo indisponivel");
       }
-      res.status(200).json({message: "participator apagado com sucesso!"})
-    } catch(error) {
+
+    }catch(error) {
       next(error);
     }
   }
 
-  static async listAllparticipators(req, res, next) {
+  static async listAllLents(req, res, next) {
     try{
       
-      const participatorsList = await participator.find({}).populate(["expansions"]).exec();
+      const lentsList = await lent.find({}).populate("boardgameLent").populate("participator").exec();
 
-      res.status(200).json(participatorsList)
+      res.status(200).json(lentsList)
       
     }catch(error) {
       next(error)
     }
   }
 
-  static async searchparticipatorByID(req, res, next) {
-    try {
-      const id = req.params.id;
+  static async updateLent(req, res, next) {
+    try{
+      
+      const lentFounded = await lent.findById({}).populate("boardgameLent").populate("participator").exec();
+      lentFounded.status = "returned"
+      lentFounded.returnTime = new Date()
 
-      const participatorFound = await participator.findById(id).populate(["expansions"]).exec();
+      const sessionPlayedtime = playedTime(lentFounded.lentTime, lentFounded.returnTime )
+      
 
-      res.status(200).json(participatorFound);
-
-
-    }catch {
+      res.status(200).json(lentsList)
+      
+    }catch(error) {
       next(error)
     }
-  }
-
-  static async searchparticipatorByName(req, res, next) {
-    try{
-
-      const participatorName = req.query.name;
-      const participatorFound = await participator.findById(id).populate(["expansions"]).exec();
-  
-      res.status(200).json(participatorFound);
-    } catch(error) {
-      next(error);
-    }
-    
   }
 }
 
