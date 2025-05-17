@@ -17,7 +17,7 @@ class Lent {
       if (isBoardgameAvailable) {
         const createdLent = await lent.create(newLent);
         const boardGameFound = await boardGame.findById(newLent.boardgameLent);
-        boardGameFound.isDisponible = !boardGameFound.isDisponible;
+        boardGameFound.isAvailable = !boardGameFound.isAvailable;
         await boardGameFound.save();
         res.status(200).json(createdLent);
       } else {
@@ -34,11 +34,21 @@ class Lent {
       
       const lentsList = await lent.find({}).populate("boardgameLent").populate("participator").exec();
 
-      res.status(200).json(lentsList)
+      res.status(200).json(lentsList);
       
     }catch(error) {
-      res.status(500).json(error)
+      res.status(500).json(error);
     }
+  }
+
+  static async listUnreturnedLents (req, res, next) {
+    try{
+      const unreturnedLentsList = await lent.find({ status: "lent" }).populate("boardgameLent").populate("participator").exec();
+      res.status(200).json(unreturnedLentsList);
+    }catch(error) {
+      res.status(500).json(error);
+    }
+
   }
 
   static async updateLent(req, res, next) {
@@ -58,7 +68,10 @@ class Lent {
         //console.log(lentFounded)
         const boardGameFound = await boardGame.findById(lentFounded.boardgameLent._id);
         if(boardGameFound){
-          boardGameFound.isDisponible = !boardGameFound.isDisponible;
+          console.log(boardGameFound.isAvailable)
+          boardGameFound.isAvailable = !boardGameFound.isAvailable;
+          console.log(boardGameFound.isAvailable)
+          
           boardGameFound.quantityOfTimesBorrowed = boardGameFound.quantityOfTimesBorrowed++;
           boardGameFound.quantityOfTimesPlayed = boardGameFound.quantityOfTimesPlayed + playedTimes;
           boardGameFound.playedTime = boardGameFound.playedTime + sessionPlayedtime;
@@ -66,7 +79,7 @@ class Lent {
           await boardGameFound.save();
         }
         await lentFounded.save();
-        res.status(200).json(lentsList);
+        res.status(200).json(lentFounded);
       }
       
     }catch(error) {
