@@ -1,6 +1,6 @@
 import { lent } from "../models/index.js";
+import { boardGame } from "../models/index.js";
 import gameAvailable from "../utils/gameAvailable.js";
-import changeGameDisponible from "../utils/changeGameDisponible.js";
 import playedTime from "../utils/playedTime.js";
 
 class Lent {
@@ -9,18 +9,23 @@ class Lent {
       const newLent = req.body;
       
       newLent.lentTime = new Date();
-      newLent.status = "lent"
+      newLent.status = "lent";
 
-      if (gameAvailable(newLent.boardgameLent)) {
+      const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
+      console.log("Jogo está disponivel: ", isBoardgameAvailable);
+      
+      if (isBoardgameAvailable) {
         const createdLent = await lent.create(newLent);
-        changeGameDisponible(newLent.boardgameLent);
+        const boardGameFound = await boardGame.findById(newLent.boardgameLent);
+        boardGameFound.isDisponible = !boardGameFound.isDisponible;
+        await boardGameFound.save();
         res.status(200).json(createdLent);
       } else {
         res.status(500).json("Jogo indisponivel");
       }
 
     }catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
   }
 
@@ -32,26 +37,42 @@ class Lent {
       res.status(200).json(lentsList)
       
     }catch(error) {
-      next(error)
+      res.status(500).json(error)
     }
   }
 
   static async updateLent(req, res, next) {
     try{
       
-      const lentFounded = await lent.findById({}).populate("boardgameLent").populate("participator").exec();
-      lentFounded.status = "returned"
-      lentFounded.returnTime = new Date()
+      const  lentId  = req.params.id;
+      console.log(lentId)
+      const playedTimes = req.body.playedTimes
+      const lentFounded = await lent.findById(lentId).populate("boardgameLent").populate("participator").exec();
+      if(lentFounded) {
+        
+        lentFounded.status = "returned"
+        lentFounded.returnTime = new Date()
+  
+        const sessionPlayedtime = playedTime(lentFounded.lentTime, lentFounded.returnTime)
 
-      const sessionPlayedtime = playedTime(lentFounded.lentTime, lentFounded.returnTime )
-      
-
-      res.status(200).json(lentsList)
+        //console.log(lentFounded)
+        const boardGameFound = await boardGame.findById(lentFounded.boardgameLent._id);
+        if(boardGameFound){
+          boardGameFound.isDisponible = !boardGameFound.isDisponible;
+          boardGameFound.quantityOfTimesBorrowed = boardGameFound.quantityOfTimesBorrowed++;
+          boardGameFound.quantityOfTimesPlayed = boardGameFound.quantityOfTimesPlayed + playedTimes;
+          boardGameFound.playedTime = boardGameFound.playedTime + sessionPlayedtime;
+          
+          await boardGameFound.save();
+        }
+        await lentFounded.save();
+        res.status(200).json(lentsList);
+      }
       
     }catch(error) {
-      next(error)
+      res.status(500).json(error);
     }
   }
 }
 
-export default Lent
+export default Lent;
