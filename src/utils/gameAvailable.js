@@ -7,7 +7,7 @@ const gameAvailable = async (boardGameId) => {
     throw new Error("Jogo não econtrado");
   }
   
-  return boardGameFound.isDisponible;
+  return boardGameFound.isAvailable;
 
 }
 

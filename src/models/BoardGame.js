@@ -69,7 +69,7 @@ const boardGameSchema = new Schema({
   artist: {
     type: [String],
   },
-  isDisponible: {
+  isAvailable: {
     type: Boolean
   },
   playedTime: {
