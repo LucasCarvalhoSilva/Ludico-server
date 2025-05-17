@@ -89,6 +89,24 @@ class Ceremony {
       next(error);
     }
   }
+
+  static async addParticipatorToCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const participatorId = req.body.participatorId;
+
+      const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
+      if (ceremonyFounded) {
+        ceremonyFounded.participators.push(participatorId);
+        await ceremonyFounded.save();
+        res.status(200).json(ceremonyFounded);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  }
 }
+
 
 export default Ceremony
