@@ -53,7 +53,7 @@ class Ceremony {
       res.status(200).json(ceremonyList)
 
 
-    } catch(error) {
+    } catch (error) {
       res.status(500).json(error);
     }
   }
@@ -86,7 +86,15 @@ class Ceremony {
 
       const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
       if (ceremonyFounded) {
-        ceremonyFounded.boardGamesAvailables.push(boardGameId);
+        const boardGameFound = await boardGame.find({
+          $or:
+            [
+              { qrCode: boardGameId },
+              { boardGameName: boardGameId }
+            ]
+        }).exec();
+
+        ceremonyFounded.boardGamesAvailables.push(boardGameFound?.[0]?._id);
         await ceremonyFounded.save();
         res.status(200).json(ceremonyFounded);
       }
@@ -96,15 +104,16 @@ class Ceremony {
     }
   }
 
-  
+
   static async addParticipatorToCeremony(req, res, next) {
     try {
       const ceremonyId = req.params.id;
       const participatorId = req.body.participatorId;
-      
+
       const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
       if (ceremonyFounded) {
-        ceremonyFounded.participators.push(participatorId);
+        const participatorFound = await participator.find({ identifier: participatorId }).exec();
+        ceremonyFounded.participators.push(participatorFound?.[0]?._id);
         await ceremonyFounded.save();
         res.status(200).json(ceremonyFounded);
       }
@@ -186,14 +195,15 @@ class Ceremony {
         return res.status(404).json({ message: "Participador não existe no sistema" });
       }
 
-      const boardGameExists = await boardGame.find({ $or: 
-        [
-          { qrCode: newLent.boardgameLent },
-          { boardGameName: newLent.boardgameLent }
-        ] 
-      }); 
+      const boardGameExists = await boardGame.find({
+        $or:
+          [
+            { qrCode: newLent.boardgameLent },
+            { boardGameName: newLent.boardgameLent }
+          ]
+      });
 
-      if(boardGameExists.length === 0) {
+      if (boardGameExists.length === 0) {
         return res.status(404).json({ message: "Jogo não existe no sistema" });
       }
 
@@ -201,16 +211,16 @@ class Ceremony {
         (participator) => participator.identifier === newLent.participator
       );
 
-      
-      
+
+
       if (participatorFound.length === 0) {
         return res.status(404).json({ message: "Participador não encontrado" });
       }
-      
+
       newLent.participator = participatorFound[0]._id;
       console.log(newLent)
-      
-  
+
+
       const boardGameFoundInTheCeremony = ceremonyList.boardGamesAvailables.filter(
         (boardGame) => boardGame.qrCode === newLent.boardgameLent || boardGame.boardGameName === newLent.boardgameLent
       );
@@ -220,16 +230,16 @@ class Ceremony {
         console.log("boardGameFoundInTheCeremony", boardGameFoundInTheCeremony)
         return res.status(404).json({ message: "Jogo não encontrado" });
       }
-      
+
       newLent.boardgameLent = boardGameFoundInTheCeremony[0]._id;
       console.log(newLent)
 
       const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
-      
+
       console.log("isBoardgameAvailable", isBoardgameAvailable)
 
 
-      console.log("Emprestimo: ",newLent)
+      console.log("Emprestimo: ", newLent)
       if (isBoardgameAvailable) {
         const createdLent = await lent.create(newLent);
         const boardGameFound = await boardGame.findById(newLent.boardgameLent);
@@ -240,7 +250,7 @@ class Ceremony {
         res.status(500).json("Jogo indisponivel");
       }
 
-    }catch(error) {
+    } catch (error) {
       console.error(error);
       res.status(500).json(error);
     }
@@ -249,9 +259,9 @@ class Ceremony {
   static async deleteCeremony(req, res, next) {
     try {
       const ceremonyId = req.params.id;
-  
+
       const deletedCeremony = await ceremony.findByIdAndDelete(ceremonyId);
-  
+
       if (deletedCeremony == null) {
         next(new NotFoundError("Evento não encontrado"));
       }
