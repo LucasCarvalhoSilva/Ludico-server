@@ -19,7 +19,7 @@ class Ceremony {
   static async listAllCeremonies(req, res, next) {
     try {
 
-      const boardGamesList = await ceremony
+      const ceremonyList = await ceremony
         .find({})
         .populate(["participators"])
         .populate(["oneShotAvailables"])
@@ -27,7 +27,7 @@ class Ceremony {
         .populate(["scapeRoomSessions"])
         .exec();
 
-      res.status(200).json(boardGamesList)
+      res.status(200).json(ceremonyList)
 
     } catch (error) {
       next(error)
@@ -38,15 +38,15 @@ class Ceremony {
     try {
       const id = req.params.id;
 
-      const boardGameFound = await ceremony
-        .findById(id)
+      const ceremonyList = await ceremony
+        .findById()
         .populate(["participators"])
         .populate(["oneShotAvailables"])
         .populate(["boardGamesAvailables"])
         .populate(["scapeRoomSessions"])
         .exec();
 
-      res.status(200).json(boardGameFound);
+      res.status(200).json(ceremonyList)
 
 
     } catch {
@@ -92,26 +92,12 @@ class Ceremony {
     }
   }
 
-  static async deleteCeremony(req, res, next) {
-    try {
-      const ceremonyId = req.params.id;
-
-      const deletedCeremony = await ceremony.findByIdAndDelete(ceremonyId);
-
-      if (deletedCeremony == null) {
-        next(new NotFoundError("Evento não encontrado"));
-      }
-      res.status(200).json({ message: "Evento apagado com sucesso!" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
+  
   static async addParticipatorToCeremony(req, res, next) {
     try {
       const ceremonyId = req.params.id;
       const participatorId = req.body.participatorId;
-
+      
       const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
       if (ceremonyFounded) {
         ceremonyFounded.participators.push(participatorId);
@@ -121,6 +107,70 @@ class Ceremony {
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
+    }
+  }
+
+  static async searchBoardGameInCeremonyByQRCode(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const boardGameQRCode = req.body.qrCode;
+
+      const ceremonyList = await ceremony
+        .findById(ceremonyId)
+        .populate(["participators"])
+        .populate(["oneShotAvailables"])
+        .populate(["boardGamesAvailables"])
+        .populate(["scapeRoomSessions"])
+        .exec();
+
+      const boardGameFound = ceremonyList.boardGamesAvailables.filter(
+        (boardGame) => boardGame.qrCode === boardGameQRCode
+      );
+
+      res.status(200).json(boardGameFound)
+
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+  static async searchParticipatorInCeremonyByIdentifier(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const participatorIdentifier = req.body.identifier;
+
+      const ceremonyList = await ceremony
+        .findById(ceremonyId)
+        .populate(["participators"])
+        .populate(["oneShotAvailables"])
+        .populate(["boardGamesAvailables"])
+        .populate(["scapeRoomSessions"])
+        .exec();
+
+      const participatorFound = ceremonyList.participators.filter(
+        (participator) => participator.identifier === participatorIdentifier
+      );
+
+      res.status(200).json(participatorFound)
+
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+
+  static async deleteCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+  
+      const deletedCeremony = await ceremony.findByIdAndDelete(ceremonyId);
+  
+      if (deletedCeremony == null) {
+        next(new NotFoundError("Evento não encontrado"));
+      }
+      res.status(200).json({ message: "Evento apagado com sucesso!" });
+    } catch (error) {
+      next(error);
     }
   }
 }

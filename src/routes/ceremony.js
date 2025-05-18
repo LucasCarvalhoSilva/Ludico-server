@@ -6,6 +6,9 @@ const routes = express.Router();
 
 routes.get("/ceremony", Auth.authenticate, Auth.permission(1), Ceremony.listAllCeremonies);
 routes.get("/ceremony/:id", Auth.authenticate, Auth.permission(1), Ceremony.searchCeremonyByID);
+routes.get("/ceremony/:id/boardgame", Auth.authenticate, Auth.permission(1), Ceremony.searchBoardGameInCeremonyByQRCode);
+routes.get("/ceremony/:id/participator",  Ceremony.searchParticipatorInCeremonyByIdentifier);
+
 routes.post("/ceremony", Auth.authenticate, Auth.permission(1), Ceremony.createCeremony);
 routes.put("/ceremony/:id", Auth.authenticate, Auth.permission(1), Ceremony.updateCeremony);
 routes.put("/ceremony/:id/addParticipator", Auth.authenticate, Auth.permission(1), Ceremony.addParticipatorToCeremony);

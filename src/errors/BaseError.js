@@ -1,16 +1,12 @@
 class BaseError extends Error {
-  constructor(message = "Erro interno do servidor", status = 500) {
+  constructor(message = "Erro interno do servidor") {
     super();
     this.message = message;
-    this.status = status;
+    
   }
 
   sendResponse(res) {
     console.log(res)
-    res.status(this.status).send({
-      message: this.message,
-      status: this.status
-    })
   }
 
 }
