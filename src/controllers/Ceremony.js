@@ -2,6 +2,7 @@ import NotFoundError from "../errors/NotFoundError.js";
 import { ceremony } from "../models/index.js";
 import { lent } from "../models/index.js";
 import { boardGame } from "../models/index.js";
+import { participator } from "../models/index.js";
 import gameAvailable from "../utils/gameAvailable.js";
 
 
@@ -178,6 +179,18 @@ class Ceremony {
         .populate(["scapeRoomSessions"])
         .exec();
 
+
+      const participatorExists = await participator.find({ identifier: newLent.participator });
+
+      if (participatorExists.length === 0) {
+        return res.status(404).json({ message: "Participador não existe no sistema" });
+      }
+
+      const boardGameExists = await boardGame.find({ qrCode: newLent.boardgameLent }); 
+
+      if(boardGameExists.length === 0) {
+        return res.status(404).json({ message: "Jogo não existe no sistema" });
+      }
 
       const participatorFound = ceremonyList.participators.filter(
         (participator) => participator.identifier === newLent.participator
