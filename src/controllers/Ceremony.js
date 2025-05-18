@@ -1,6 +1,7 @@
 import NotFoundError from "../errors/NotFoundError.js";
 import { ceremony } from "../models/index.js";
 import { lent } from "../models/index.js";
+import { boardGame } from "../models/index.js";
 import gameAvailable from "../utils/gameAvailable.js";
 
 
@@ -41,7 +42,7 @@ class Ceremony {
       const id = req.params.id;
 
       const ceremonyList = await ceremony
-        .findById()
+        .findById(id)
         .populate(["participators"])
         .populate(["oneShotAvailables"])
         .populate(["boardGamesAvailables"])
@@ -179,26 +180,38 @@ class Ceremony {
 
 
       const participatorFound = ceremonyList.participators.filter(
-        (participator) => participator._id.toString() === newLent.participator
+        (participator) => participator.identifier === newLent.participator
       );
-      console.log(participatorFound)
 
+      
+      
       if (participatorFound.length === 0) {
         return res.status(404).json({ message: "Participador não encontrado" });
       }
-
       
+      newLent.participator = participatorFound[0]._id;
+      console.log(newLent)
+      
+  
       const boardGameFoundInTheCeremony = ceremonyList.boardGamesAvailables.filter(
-        (boardGame) => boardGame._id.toString() === newLent.boardgameLent
+        (boardGame) => boardGame.qrCode === newLent.boardgameLent
       );
-      
+
+      newLent.boardgameLent = boardGameFoundInTheCeremony[0]._id;
+      console.log(newLent)
+
       if (boardGameFoundInTheCeremony.length === 0) {
+        console.log("boardGameFoundInTheCeremony", boardGameFoundInTheCeremony)
         return res.status(404).json({ message: "Jogo não encontrado" });
       }
-
-      const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
-      console.log("Jogo está disponivel: ", isBoardgameAvailable);
       
+      console.log(boardGameFound._id)
+      const isBoardgameAvailable = await gameAvailable(newLent.id);
+      
+      console.log("isBoardgameAvailable", isBoardgameAvailable)
+
+
+      console.log("Emprestimo: ",newLent)
       if (isBoardgameAvailable) {
         const createdLent = await lent.create(newLent);
         const boardGameFound = await boardGame.findById(newLent.boardgameLent);
