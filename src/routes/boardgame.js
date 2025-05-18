@@ -4,10 +4,11 @@ import Auth from "../middlewares/permission.js";
 
 const routes = express.Router();
 
+routes.get("/boardgame", Auth.authenticate, Auth.permission(1), BoardGame.listAllBoardGames);
+//routes.get("/boardgame/qrCode", BoardGame.searchBoardGameByQrCode);
+routes.get("/boardgame/search", Auth.authenticate, Auth.permission(1), BoardGame.searchBoardGameByFilters);
+routes.get("/boardgame/:id", Auth.authenticate, Auth.permission(1), BoardGame.searchBoardGameByID);
 routes.post("/boardgame", Auth.authenticate, Auth.permission(1), BoardGame.createBoardGame);
 routes.delete("/boardgame/:id", Auth.authenticate, Auth.permission(2), BoardGame.deleteBoardGame);
-routes.get("/boardgame", Auth.authenticate, Auth.permission(1), BoardGame.listAllBoardGames);
-routes.get("/boardgame/:id", Auth.authenticate, Auth.permission(1), BoardGame.searchBoardGameByID);
-routes.get("/boardgame/search", Auth.authenticate, Auth.permission(1), BoardGame.searchBoardGameByName);
 
 export default routes

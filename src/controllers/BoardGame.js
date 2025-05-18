@@ -11,7 +11,7 @@ class BoardGame {
       const createdBoardGame = await boardGame.create(newBoardGame);
       res.status(200).json(createdBoardGame);
     }catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
   }
 
@@ -26,7 +26,7 @@ class BoardGame {
       }
       res.status(200).json({message: "Boardgame apagado com sucesso!"})
     } catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
   }
 
@@ -38,7 +38,7 @@ class BoardGame {
       res.status(200).json(boardGamesList)
       
     }catch(error) {
-      next(error)
+      res.status(500).json(error);
     }
   }
 
@@ -51,23 +51,39 @@ class BoardGame {
       res.status(200).json(boardGameFound);
 
 
-    }catch {
-      next(error)
+    }catch(error) {
+      res.status(500).json(error);
     }
   }
 
-  static async searchBoardGameByName(req, res, next) {
+  static async searchBoardGameByFilters(req, res, next) {
     try{
+      const filters = req.query
 
-      const boardGameName = req.query.name;
-      const boardGameFound = await boardGame.findById(id).populate(["expansions"]).exec();
+      console.log("filters", filters)
+      
+      let boardGameFound;
+
+      if( filters.name == null && filters.qrCode == null ) {
+        throw new Error("Nenhum filtro foi passado");
+      }
+      if( filters.name != null ) {
+        boardGameFound = await boardGame.findOne({boardGameName: filters.name}).populate(["expansions"]).exec();
+      }
+      if( filters.qrCode != null ) {
+        boardGameFound = await boardGame.findOne({qrCode: filters.qrCode}).populate(["expansions"]).exec();
+      }
+
+      if(boardGameFound == null) {
+        throw new Error("Boardgame não encontrado");
+      }
   
       res.status(200).json(boardGameFound);
     } catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
-    
   }
+
 }
 
 export default BoardGame
