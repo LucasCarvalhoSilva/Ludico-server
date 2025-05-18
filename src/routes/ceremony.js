@@ -10,6 +10,7 @@ routes.get("/ceremony/:id/boardgame", Auth.authenticate, Auth.permission(1), Cer
 routes.get("/ceremony/:id/participator",  Ceremony.searchParticipatorInCeremonyByIdentifier);
 
 routes.post("/ceremony", Auth.authenticate, Auth.permission(1), Ceremony.createCeremony);
+routes.post("/ceremony/:id/lent", Ceremony.lent);
 routes.put("/ceremony/:id", Auth.authenticate, Auth.permission(1), Ceremony.updateCeremony);
 routes.put("/ceremony/:id/addParticipator", Auth.authenticate, Auth.permission(1), Ceremony.addParticipatorToCeremony);
 routes.put("/ceremony/:id/addBoardGame", Auth.authenticate, Auth.permission(1), Ceremony.addBoardGameToCeremony);

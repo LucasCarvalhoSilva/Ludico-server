@@ -1,6 +1,8 @@
 import NotFoundError from "../errors/NotFoundError.js";
-import BadRequestError from "../errors/BadRequestError.js";
 import { ceremony } from "../models/index.js";
+import { lent } from "../models/index.js";
+import gameAvailable from "../utils/gameAvailable.js";
+
 
 class Ceremony {
   static async createCeremony(req, res, next) {
@@ -158,6 +160,59 @@ class Ceremony {
     }
   }
 
+
+  static async lent(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const newLent = req.body;
+
+      newLent.lentTime = new Date();
+      newLent.status = "lent";
+
+      const ceremonyList = await ceremony
+        .findById(ceremonyId)
+        .populate(["participators"])
+        .populate(["oneShotAvailables"])
+        .populate(["boardGamesAvailables"])
+        .populate(["scapeRoomSessions"])
+        .exec();
+
+
+      const participatorFound = ceremonyList.participators.filter(
+        (participator) => participator._id.toString() === newLent.participator
+      );
+      console.log(participatorFound)
+
+      if (participatorFound.length === 0) {
+        return res.status(404).json({ message: "Participador não encontrado" });
+      }
+
+      
+      const boardGameFoundInTheCeremony = ceremonyList.boardGamesAvailables.filter(
+        (boardGame) => boardGame._id.toString() === newLent.boardgameLent
+      );
+      
+      if (boardGameFoundInTheCeremony.length === 0) {
+        return res.status(404).json({ message: "Jogo não encontrado" });
+      }
+
+      const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
+      console.log("Jogo está disponivel: ", isBoardgameAvailable);
+      
+      if (isBoardgameAvailable) {
+        const createdLent = await lent.create(newLent);
+        const boardGameFound = await boardGame.findById(newLent.boardgameLent);
+        boardGameFound.isAvailable = !boardGameFound.isAvailable;
+        await boardGameFound.save();
+        res.status(200).json(createdLent);
+      } else {
+        res.status(500).json("Jogo indisponivel");
+      }
+
+    }catch(error) {
+      res.status(500).json(error);
+    }
+  }
 
   static async deleteCeremony(req, res, next) {
     try {

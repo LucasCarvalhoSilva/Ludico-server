@@ -10,7 +10,8 @@ const participatorSchema = new Schema({
   },
   identifier: {
     type: String,
-    required: [true, "RA ou CPF obrigatório"]
+    required: [true, "RA ou CPF obrigatório"],
+    unique: true
   },
   dateOfBirth: {
     type: Date,
@@ -27,6 +28,10 @@ const participatorSchema = new Schema({
   },
   education: {
     type: String
+  },
+  email: {
+    type: String,
+    unique: true,
   },
   playedBgGames: [{
     type: mongoose.Schema.Types.ObjectId
