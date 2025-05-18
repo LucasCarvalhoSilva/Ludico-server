@@ -75,7 +75,10 @@ const boardGameSchema = new Schema({
   playedTime: {
     type: Number,
     required: true
-  }
+  },
+  owner: {
+    type: String
+  },
 
 })
 
