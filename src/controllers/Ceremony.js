@@ -33,7 +33,7 @@ class Ceremony {
       res.status(200).json(ceremonyList)
 
     } catch (error) {
-      next(error)
+      res.status(500).json(error);
     }
   }
 
@@ -52,8 +52,8 @@ class Ceremony {
       res.status(200).json(ceremonyList)
 
 
-    } catch {
-      next(error)
+    } catch(error) {
+      res.status(500).json(error);
     }
   }
 
@@ -194,19 +194,19 @@ class Ceremony {
       
   
       const boardGameFoundInTheCeremony = ceremonyList.boardGamesAvailables.filter(
-        (boardGame) => boardGame.qrCode === newLent.boardgameLent
+        (boardGame) => boardGame.qrCode === newLent.boardgameLent || boardGame.boardGameName === newLent.boardgameLent
       );
 
-      newLent.boardgameLent = boardGameFoundInTheCeremony[0]._id;
-      console.log(newLent)
-
+      console.log("boardGameFoundInTheCeremony => ", boardGameFoundInTheCeremony)
       if (boardGameFoundInTheCeremony.length === 0) {
         console.log("boardGameFoundInTheCeremony", boardGameFoundInTheCeremony)
         return res.status(404).json({ message: "Jogo não encontrado" });
       }
       
-      console.log(boardGameFound._id)
-      const isBoardgameAvailable = await gameAvailable(newLent.id);
+      newLent.boardgameLent = boardGameFoundInTheCeremony[0]._id;
+      console.log(newLent)
+
+      const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
       
       console.log("isBoardgameAvailable", isBoardgameAvailable)
 
@@ -223,6 +223,7 @@ class Ceremony {
       }
 
     }catch(error) {
+      console.error(error);
       res.status(500).json(error);
     }
   }
