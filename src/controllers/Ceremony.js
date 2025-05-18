@@ -186,7 +186,12 @@ class Ceremony {
         return res.status(404).json({ message: "Participador não existe no sistema" });
       }
 
-      const boardGameExists = await boardGame.find({ qrCode: newLent.boardgameLent }); 
+      const boardGameExists = await boardGame.find({ $or: 
+        [
+          { qrCode: newLent.boardgameLent },
+          { boardGameName: newLent.boardgameLent }
+        ] 
+      }); 
 
       if(boardGameExists.length === 0) {
         return res.status(404).json({ message: "Jogo não existe no sistema" });
