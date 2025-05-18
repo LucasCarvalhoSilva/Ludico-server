@@ -1,5 +1,4 @@
 import NotFoundError from "../errors/NotFoundError.js";
-import BadRequestError from "../errors/BadRequestError.js";
 import { boardGame } from "../models/index.js";
 
 class BoardGame {
