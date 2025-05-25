@@ -24,7 +24,7 @@ class Participator {
       }
       res.status(200).json({message: "participator apagado com sucesso!"})
     } catch(error) {
-      next(error);
+      res.status(500).json(error);
     }
   }
 
@@ -36,7 +36,7 @@ class Participator {
       res.status(200).json(participatorsList)
       
     }catch(error) {
-      next(error)
+      res.status(500).json(error);
     }
   }
 
@@ -67,6 +67,28 @@ class Participator {
     }
     
   }
+
+  static async updateParticipator(req, res, next) {
+    try {
+      const participatorId = req.params.id;
+      const updatedParticipator = req.body;
+
+      const updatedParticipatorData = await participator.findByIdAndUpdate(
+        participatorId,
+        updatedParticipator,
+        { new: true }
+      );
+
+      if (!updatedParticipatorData) {
+        return res.status(404).json({ message: "Participador não encontrado" });
+      }
+
+      res.status(200).json(updatedParticipatorData);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
 }
 
 export default Participator

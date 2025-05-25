@@ -15,6 +15,22 @@ class RpgSystem {
     }
   }
 
+  static async deleteCreateRpgSystem(req, res, next) {
+    const rpgSystemId = req.params.id;
+
+    try {
+      const deletedRpgSystem = await rpgSystem.findByIdAndDelete(rpgSystemId);
+
+      if (!deletedRpgSystem) {
+        return res.status(404).json({ message: "RPG System not found" });
+      }
+
+      res.status(200).json(deletedRpgSystem);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
   static async getRpgSystem(req, res, next) {
     try {
       const rpgSystems = await rpgSystem.find();
