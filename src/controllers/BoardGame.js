@@ -64,7 +64,8 @@ class BoardGame {
       let boardGameFound;
 
       if( filters.name == null && filters.qrCode == null ) {
-        throw new Error("Nenhum filtro foi passado");
+        res.status(404).json("error: name or qrCode is required");
+        return;
       }
       if( filters.name != null ) {
         boardGameFound = await boardGame.findOne({boardGameName: filters.name}).populate(["expansions"]).exec();
@@ -74,7 +75,8 @@ class BoardGame {
       }
 
       if(boardGameFound == null) {
-        throw new Error("Boardgame não encontrado");
+        res.status(404).json("error: boardgame not found");
+        return;
       }
   
       res.status(200).json(boardGameFound);

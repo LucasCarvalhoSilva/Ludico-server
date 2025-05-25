@@ -6,11 +6,12 @@ import ceremony from "./ceremony.js";
 import lent from "./lent.js";
 import participator from "./participator.js";
 import rpgSystem from "./rpgSystem.js";
+import personage from "./personage.js";
 
 const routes = (app) => {
   app.route('/').get((req, res) => res.status(200).send("Ludico Server! Welcome"));
 
-  app.use(express.json(), user, login, ceremony, boardgame, lent, participator, rpgSystem);
+  app.use(express.json(), user, login, ceremony, boardgame, lent, participator, rpgSystem, personage);
 }
 
 export default routes;

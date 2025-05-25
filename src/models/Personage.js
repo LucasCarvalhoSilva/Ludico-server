@@ -46,7 +46,7 @@ const personageSchema = new Schema({
     type:[String]
   },
   skill: {
-    type:{String}
+    type:[String]
   }
 })
 
