@@ -1,7 +1,7 @@
 import NotFoundError from "../errors/NotFoundError.js";
 import { ceremony } from "../models/index.js";
 import { lent } from "../models/index.js";
-import { boardGame } from "../models/index.js";
+import { boardGame, oneShot } from "../models/index.js";
 import { participator } from "../models/index.js";
 import gameAvailable from "../utils/gameAvailable.js";
 
@@ -283,6 +283,26 @@ class Ceremony {
     } catch (error) {
       console.error(error);
       res.status(500).json(error);
+    }
+  }
+
+  static async addOneShotToCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const newOneShot = req.body;
+
+      const oneShotCreated = await oneShot.create(newOneShot);
+      const oneShotId = oneShotCreated._id;
+
+      const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
+      if (ceremonyFounded) {
+        ceremonyFounded.oneShotAvailables.push(oneShotId);
+        await ceremonyFounded.save();
+        res.status(200).json(ceremonyFounded);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({message: error.message});
     }
   }
 
