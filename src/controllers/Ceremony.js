@@ -45,7 +45,7 @@ class Ceremony {
       const ceremonyList = await ceremony
         .findById(id)
         .populate(["participators"])
-        .populate(["oneShotAvailables"])
+        .populate({ path: "oneShotAvailables", populate: [{ path: "master" }, { path: "system" }, { path: "participators" }, { path: "players" }, { path: "characters" }] })
         .populate(["boardGamesAvailables"])
         .populate(["scapeRoomSessions"])
         .exec();
@@ -84,21 +84,51 @@ class Ceremony {
       const ceremonyId = req.params.id;
       const boardGameId = req.body.boardGameId;
 
+      
       const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
       if (ceremonyFounded) {
         const boardGameFound = await boardGame.find({
           $or:
-            [
-              { qrCode: boardGameId },
-              { boardGameName: boardGameId }
-            ]
+          [
+            { qrCode: boardGameId },
+            { boardGameName: boardGameId }
+          ]
         }).exec();
+        console.log("boardGameFound", boardGameFound)
+        if (boardGameFound.length === 0) { 
+          return res.status(500).json("Jogo não cadastrado no sistema");
+        }
 
-        ceremonyFounded.boardGamesAvailables.push(boardGameFound?.[0]?._id);
+        ceremonyFounded.boardGamesAvailables.push(boardGameFound[0]._id);
         await ceremonyFounded.save();
         res.status(200).json(ceremonyFounded);
       }
     } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  }
+
+  static async removeBoardGameFromCeremony(req, res, next) {
+    try {
+
+      const ceremonyId = req.params.id;
+      const boardGameId = req.body.boardgameId; 
+      
+      const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
+      console.log("ceremonyId", ceremonyId)
+      console.log("boardGameId", boardGameId)
+      console.log("ceremonyFounded", ceremonyFounded)
+      if (ceremonyFounded) {
+        const index = ceremonyFounded.boardGamesAvailables.indexOf(boardGameId);
+        if (index > -1) {
+          ceremonyFounded.boardGamesAvailables.splice(index, 1);
+        }
+      
+      }
+      await ceremonyFounded.save();
+      res.status(200).json(ceremonyFounded);
+    }catch (error) {
       console.log(error);
       res.status(500).json(error);
     }

@@ -14,6 +14,7 @@ routes.post("/ceremony/:id/lent",  Ceremony.lent);
 routes.put("/ceremony/:id", Auth.authenticate, Auth.permission(1), Ceremony.updateCeremony);
 routes.put("/ceremony/:id/addParticipator", Auth.authenticate, Auth.permission(1), Ceremony.addParticipatorToCeremony);
 routes.put("/ceremony/:id/addBoardGame", Auth.authenticate, Auth.permission(1), Ceremony.addBoardGameToCeremony);
+routes.put("/ceremony/:id/removeBoardGame", Auth.authenticate, Auth.permission(1), Ceremony.removeBoardGameFromCeremony);
 routes.delete("/ceremony/:id", Auth.authenticate, Auth.permission(2), Ceremony.deleteCeremony);
 
 export default routes

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const oneShotSchema = new Schema({
   id: {type: mongoose.Schema.Types.ObjectId},
+  adventure:{
+    type: String,
+    required: true
+  },
   master: {
     type: mongoose.Schema.Types.ObjectId,
     ref:'user'
