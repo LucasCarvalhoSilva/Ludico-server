@@ -43,11 +43,13 @@ const campaingSchema = new Schema({
   themes: {
     type: [String]
   },
-  personages: [{
-    type: mongoose.Schema.Types.ObjectId
+  characters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'character'
   }],
   participators: [{
-    type: mongoose.Schema.Types.ObjectId
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'participator'
   }]
 
 

@@ -43,9 +43,9 @@ const oneShotSchema = new Schema({
   themes: {
     type: [String]
   },
-  personages: [{
+  characters: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'personage'
+    ref: 'character'
   }],
   participators: [{
     type: mongoose.Schema.Types.ObjectId,

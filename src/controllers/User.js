@@ -11,6 +11,16 @@ class User {
       next(error);
     }
   }
+
+  static async listAllUsers(req, res, next) {
+    try {
+      const userList = await user.find({}).exec();
+
+      res.status(200).json(userList);
+    }catch(error) {
+      next(error);
+    }
+  }
 }
 
 export default User

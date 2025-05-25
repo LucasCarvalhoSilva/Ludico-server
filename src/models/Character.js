@@ -2,13 +2,16 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const personageSchema = new Schema({
+const characterSchema = new Schema({
   id: { type: mongoose.Schema.Types.ObjectId},
   name: {
     type: String,
     required: [true, 'O nome do personagem é obrigatório']
   },
   race: {
+    type: String
+  },
+  class: {
     type: String
   },
   heritage: {
@@ -50,6 +53,6 @@ const personageSchema = new Schema({
   }
 })
 
-const personage = mongoose.model('personage', personageSchema)
+const character = mongoose.model('character', characterSchema)
 
-export default personage
+export default character

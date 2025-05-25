@@ -6,7 +6,7 @@ import campaing from "./Campaing.js";
 import ceremony from "./Ceremony.js";
 import oneShot from "./OneShot.js";
 import participator from "./Participator.js";
-import personage from "./Personage.js";
+import character from "./Character.js";
 import rpgSystem from "./RpgSystem.js";
 import scapeRoomHistory from "./ScapeRoomHistory.js";
 import scapeRoomSession from "./ScapeRoomSession.js";
@@ -21,7 +21,7 @@ export {
   ceremony,
   oneShot,
   participator, 
-  personage, 
+  character, 
   rpgSystem, 
   scapeRoomHistory, 
   scapeRoomSession, 
