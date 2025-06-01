@@ -7,10 +7,6 @@ const scapeRoomSessionSchema = new Schema({
   isFinished: {
     type: Boolean
   },
-  ceremony:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"ceremony"
-  },
   startedAt: {
     type: String
   },
@@ -20,7 +16,11 @@ const scapeRoomSessionSchema = new Schema({
   participators: [{
     type: mongoose.Schema.Types.ObjectId,
     ref:"participator"
-  }]
+  }],
+  history: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"scapeRoomHistory"
+  }],
 })
 
 const scapeRoomSession = mongoose.model("scapeRoomSessions", scapeRoomSessionSchema)

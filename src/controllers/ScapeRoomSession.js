@@ -1,4 +1,4 @@
-import { scapeRoomSession } from "../models/index.js";
+import { scapeRoomSession, participator } from "../models/index.js";
 
 
 class ScapeRoomSession {
@@ -31,8 +31,30 @@ class ScapeRoomSession {
 
   static async listScapeRoomSessions(req, res, next) {
     try {
-      const scapeRoomSessions = await scapeRoomSession.find().exec();
+      const scapeRoomSessions = await scapeRoomSession.find().populate('history').exec();
       res.status(200).json(scapeRoomSessions);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async addParticipatorToScapeRoomSession(req, res, next) {
+    try {
+      const scapeRoomSessionId = req.params.id;
+      const participatorId = req.body.participatorId;
+
+      const scapeRoomSessionFound = await scapeRoomSession.findById(scapeRoomSessionId);
+      if (!scapeRoomSessionFound) {
+        return res.status(404).json({ message: "Sessão de Escape não encontrada" });
+      }
+      const participatorFound = await participator.find({ identifier: participatorId });
+      if (!participatorFound) {
+        return res.status(404).json({ message: "Participante não encontrado" });
+      }
+
+      scapeRoomSessionFound.participators.push(participatorFound[0]._id);
+      await scapeRoomSessionFound.save();
+      res.status(200).json(scapeRoomSessionFound);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -42,7 +64,7 @@ class ScapeRoomSession {
     try {
       const id = req.params.id;
 
-      const scapeRoomSessionFound = await scapeRoomSession.findById(id).exec();
+      const scapeRoomSessionFound = await scapeRoomSession.findById(id).populate('history').exec();
 
       if (!scapeRoomSessionFound) {
         return res.status(404).json({ message: "Sessão de Escape não encontrada" });

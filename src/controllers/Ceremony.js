@@ -1,5 +1,5 @@
 import NotFoundError from "../errors/NotFoundError.js";
-import { ceremony } from "../models/index.js";
+import { ceremony, scapeRoomSession } from "../models/index.js";
 import { lent } from "../models/index.js";
 import { boardGame, oneShot } from "../models/index.js";
 import { participator } from "../models/index.js";
@@ -207,6 +207,28 @@ class Ceremony {
     }
   }
 
+  static async addScapeRoomSessionToCeremony(req, res, next) {
+    try {
+      const ceremonyId = req.params.id;
+      const newScapeRoomSession = req.body;
+
+      const scapeRoomSessionCreated = await scapeRoomSession.create(newScapeRoomSession);
+      const scapeRoomSessionCreatedID = scapeRoomSessionCreated._id;
+
+      const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
+      if (ceremonyFounded) {
+        ceremonyFounded.scapeRoomSessions.push(scapeRoomSessionCreatedID);
+        await ceremonyFounded.save();
+        res.status(200).json(ceremonyFounded);
+      }else {
+        res.status(404).json({ message: "Cerimônia não encontrada" });
+      }
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({message: error.message});
+    }
+  }
 
   static async lent(req, res, next) {
     try {
@@ -305,6 +327,8 @@ class Ceremony {
         ceremonyFounded.oneShotAvailables.push(oneShotId);
         await ceremonyFounded.save();
         res.status(200).json(ceremonyFounded);
+      }else {
+        res.status(404).json({ message: "Cerimônia não encontrada" });
       }
     } catch (error) {
       console.log(error);
