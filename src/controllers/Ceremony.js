@@ -45,7 +45,7 @@ class Ceremony {
       const ceremonyList = await ceremony
         .findById(id)
         .populate(["participators"])
-        .populate({ path: "oneShotAvailables", populate: [{ path: "master" }, { path: "system" }, { path: "participators" }, { path: "players" }, { path: "characters" }] })
+        .populate({ path: "oneShotAvailables", populate: [{ path: "master" }, { path: "system" }, { path: "players" }, { path: "characters" }] })
         .populate(["boardGamesAvailables"])
         .populate(["scapeRoomSessions"])
         .exec();

@@ -11,11 +11,11 @@ const scapeRoomSessionSchema = new Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:"ceremony"
   },
-  staredAt: {
-    type: Date
+  startedAt: {
+    type: String
   },
   finishedAt: {
-    type: Date
+    type: String
   },
   participators: [{
     type: mongoose.Schema.Types.ObjectId,
