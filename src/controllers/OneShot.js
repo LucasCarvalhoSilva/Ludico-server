@@ -32,11 +32,36 @@ class OneShot {
           const oneShots = await oneShot.find()
           .populate('master')
           .populate('system')
-          .populate(["participators"])
           .populate(["players"])
           .populate(["characters"])
           .exec();
           res.status(200).json(oneShots);
+      } catch (error) {
+          res.status(500).json(error);
+      }
+  }
+
+  static async addParticipatorToOneShot(req, res, next) {
+      try {
+          const oneShotId = req.params.id;
+          const participatorId = req.body.participatorId;
+
+          const oneShotFound = await oneShot.findById(oneShotId);
+          console.log("One Shot found:", oneShotFound);
+          if (!oneShotFound) {
+              return res.status(404).json({ message: "One Shot not found" });
+          }
+
+          const participatorFound = await participator.find({ identifier: participatorId });
+          console.log("Participator found:", participatorFound);
+          if (!participatorFound) {
+            console.log("Participator not found");  
+            return res.status(404).json({ message: "Participator not found" });
+          }
+          oneShotFound.players.push(participatorFound[0]._id);
+          await oneShotFound.save();
+
+          res.status(200).json(oneShotFound);
       } catch (error) {
           res.status(500).json(error);
       }
@@ -50,7 +75,6 @@ class OneShot {
               .findById(id)
               .populate('master')
               .populate('system')
-              .populate(["participators"])
               .populate(["players"])
               .populate(["characters"])
               .exec();
