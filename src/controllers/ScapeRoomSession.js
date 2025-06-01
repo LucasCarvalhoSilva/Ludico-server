@@ -31,7 +31,7 @@ class ScapeRoomSession {
 
   static async listScapeRoomSessions(req, res, next) {
     try {
-      const scapeRoomSessions = await scapeRoomSession.find().exec();
+      const scapeRoomSessions = await scapeRoomSession.find().populate('history').exec();
       res.status(200).json(scapeRoomSessions);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -64,7 +64,7 @@ class ScapeRoomSession {
     try {
       const id = req.params.id;
 
-      const scapeRoomSessionFound = await scapeRoomSession.findById(id).exec();
+      const scapeRoomSessionFound = await scapeRoomSession.findById(id).populate('history').exec();
 
       if (!scapeRoomSessionFound) {
         return res.status(404).json({ message: "Sessão de Escape não encontrada" });
