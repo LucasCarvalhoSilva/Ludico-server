@@ -17,10 +17,16 @@ const scapeRoomSessionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref:"participator"
   }],
-  history: [{
+  history: {
     type: mongoose.Schema.Types.ObjectId,
     ref:"scapeRoomHistory"
-  }],
+  },
+  room: {
+    type: String
+  },
+  duration:{
+    type:"String"
+  }
 })
 
 const scapeRoomSession = mongoose.model("scapeRoomSessions", scapeRoomSessionSchema)
