@@ -47,7 +47,7 @@ class Ceremony {
         .populate(["participators"])
         .populate({ path: "oneShotAvailables", populate: [{ path: "master" }, { path: "system" }, { path: "players" }, { path: "characters" }] })
         .populate(["boardGamesAvailables"])
-        .populate(["scapeRoomSessions"])
+        .populate({path: "scapeRoomSessions", populate: [{ path: "participators" }, { path: "history" }] })
         .exec();
 
       res.status(200).json(ceremonyList)
