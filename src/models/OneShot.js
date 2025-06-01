@@ -50,13 +50,7 @@ const oneShotSchema = new Schema({
   characters: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'character'
-  }],
-  participators: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'participator'
   }]
-
-
 })
 
 const oneShot = mongoose.model('oneShot', oneShotSchema)

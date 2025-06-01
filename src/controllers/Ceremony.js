@@ -141,12 +141,18 @@ class Ceremony {
       const participatorId = req.body.participatorId;
 
       const ceremonyFounded = await ceremony.findById(ceremonyId).exec();
-      if (ceremonyFounded) {
-        const participatorFound = await participator.find({ identifier: participatorId }).exec();
-        ceremonyFounded.participators.push(participatorFound?.[0]?._id);
-        await ceremonyFounded.save();
-        res.status(200).json(ceremonyFounded);
+      const participatorFounded = await participator.find({ identifier: participatorId }).exec();
+      console.log("Participator => ", participatorFounded)
+      if (participatorFounded.length === 0) {
+        return res.status(500).json("Participador não cadastrado no sistema");
       }
+      if (ceremonyFounded === null) { 
+        return res.status(500).json("Evento não cadastrado no sistema");
+      }
+      ceremonyFounded.participators.push(participatorFounded[0]._id);
+      await ceremonyFounded.save();
+      res.status(200).json(ceremonyFounded);
+        
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
