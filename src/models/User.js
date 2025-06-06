@@ -23,7 +23,10 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    required: [true, "email é obrigatório"]
+    required: [true, "email é obrigatório"],
+  },
+  institution: {
+    type: String
   },
   role: {
     type: mongoose.Schema.Types.ObjectId,

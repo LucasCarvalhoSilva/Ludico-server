@@ -5,6 +5,7 @@ class User {
     try {
       const newUser = req.body;
 
+      console.log("Creating user with data:", newUser);
       const createdUser = await user.create(newUser);
       res.status(200).json(createdUser);
     }catch(error) {
