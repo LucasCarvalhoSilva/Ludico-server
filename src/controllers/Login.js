@@ -36,7 +36,7 @@ class Login {
           user: userLogIn.name
         },
         process.env.KEY,
-        //{expiresIn: '6h'}
+        {expiresIn: '12h'}
       );
 
       console.log("Token do usuario", token)

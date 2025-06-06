@@ -46,13 +46,7 @@ const campaingSchema = new Schema({
   characters: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'character'
-  }],
-  participators: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'participator'
   }]
-
-
 })
 
 const campaing = mongoose.model('campaing', campaingSchema)

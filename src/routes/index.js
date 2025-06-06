@@ -10,11 +10,12 @@ import character from "./character.js";
 import oneShot from "./oneShots.js";
 import scapeRoomHistory from "./scapeRoomHistory.js";
 import scapeRoomSession from "./scapeRoomSession.js";
+import campaing from "./campaing.js";
 
 const routes = (app) => {
   app.route('/').get((req, res) => res.status(200).send("Ludico Server! Welcome"));
 
-  app.use(express.json(), user, login, ceremony, boardgame, lent, participator, rpgSystem, character, oneShot, scapeRoomHistory, scapeRoomSession);
+  app.use(express.json(), user, login, ceremony, boardgame, lent, participator, rpgSystem, character, oneShot, scapeRoomHistory, scapeRoomSession, campaing);
 }
 
 export default routes;

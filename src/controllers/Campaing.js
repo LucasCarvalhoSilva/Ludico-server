@@ -14,7 +14,13 @@ class Campaing {
   
   static async listAllCampaings(req, res, next) {
     try {
-      const campaings = await campaing.find().populate('history').exec();
+      const campaings = await campaing
+        .find()
+        .populate('master')
+        .populate('system')
+        .populate(["players"])
+        .populate('characters')
+        .exec();
       res.status(200).json(campaings);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -25,7 +31,13 @@ class Campaing {
     const campaingId = req.params.id;
 
     try {
-      const foundCampaing = await campaing.findById(campaingId).populate('history').exec();
+      const foundCampaing = await campaing
+        .findById(campaingId)
+        .populate('master')
+        .populate('system')
+        .populate(["players"])
+        .populate('characters')
+        .exec();
       if (!foundCampaing) {
         return res.status(404).json({ message: "Campanha não encontrada" });
       }
@@ -44,6 +56,8 @@ class Campaing {
       if (!updatedCampaing) {
         return res.status(404).json({ message: "Campanha não encontrada" });
       }
+
+      updatedCampaing.save();
       res.status(200).json(updatedCampaing);
     } catch (error) {
       res.status(500).json({ error: error.message });
