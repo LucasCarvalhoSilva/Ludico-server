@@ -23,9 +23,6 @@ const scapeRoomSessionSchema = new Schema({
   },
   room: {
     type: String
-  },
-  duration:{
-    type:"String"
   }
 })
 

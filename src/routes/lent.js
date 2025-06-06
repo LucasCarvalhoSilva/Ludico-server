@@ -4,12 +4,9 @@ import Auth from "../middlewares/permission.js";
 
 const routes = express.Router();
 
-routes.post("/lent", Lent.createLent);
-//routes.delete("/lent/:id", Auth.authenticate, Auth.permission(2), Ceremony.deleteBoardGame);
-routes.get("/lent", Lent.listAllLents);
-//routes.get("/lent/:id", Auth.authenticate, Auth.permission(1), Ceremony.searchCeremonyByID);
-//routes.get("/lent/search", Auth.authenticate, Auth.permission(1), Ceremony.searchBoardGameByName);
-routes.get("/lent/unreturned", Lent.listUnreturnedLents);
-routes.put("/lent/:id", Lent.updateLent);
+routes.post("/lent", Auth.authenticate, Auth.permission(1), Lent.createLent);
+routes.get("/lent", Auth.authenticate, Auth.permission(1), Lent.listAllLents);
+routes.get("/lent/unreturned", Auth.authenticate, Auth.permission(1), Lent.listUnreturnedLents);
+routes.put("/lent/:id", Auth.authenticate, Auth.permission(1), Lent.updateLent);
 
 export default routes

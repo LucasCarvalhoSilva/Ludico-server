@@ -14,7 +14,7 @@ class User {
 
   static async listAllUsers(req, res, next) {
     try {
-      const userList = await user.find({}).exec();
+      const userList = await user.find({}).populate('role').exec();
 
       res.status(200).json(userList);
     }catch(error) {
