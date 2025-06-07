@@ -79,6 +79,9 @@ const boardGameSchema = new Schema({
   owner: {
     type: String
   },
+  storageLocation: {
+    type: String,
+  }
 
 })
 
