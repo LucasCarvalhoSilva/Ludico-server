@@ -9,9 +9,15 @@ const userSchema = new Schema({
     type: String,
     required: [true, "nome do usuário é obrigatório"]
   },
+  identifier: {
+    type: String,
+    required: [true, "o identificador é obrigatório"],
+    unique: true
+  },
   username: {
      type: String,
-     required: [true, "username é obrigatório"]
+     required: [true, "username é obrigatório"],
+     unique: true
   },
   status: {
     type: String,
@@ -24,6 +30,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: [true, "email é obrigatório"],
+    unique: true
   },
   institution: {
     type: String

@@ -22,6 +22,21 @@ class User {
       next(error);
     }
   }
+
+  static async deleteUser(req, res, next) {
+    const userId = req.params.id;
+    console.log("Deleting user with ID:", userId);
+
+    try {
+      const deletedUser = await user.findByIdAndDelete(userId).exec();
+      if (!deletedUser) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      res.status(200).json({ message: "Usuário deletado com sucesso" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default User
