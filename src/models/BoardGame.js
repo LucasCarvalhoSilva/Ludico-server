@@ -29,7 +29,7 @@ const boardGameSchema = new Schema({
     required: [true, "A editora é obrigatória"]
   },
   designer: {
-    type: [String]
+    type: String
   },
   bggRank: {
     type: Number
@@ -55,16 +55,20 @@ const boardGameSchema = new Schema({
     required: true
   },
   quantityOfTimesBorrowed: {
-    type: Number
+    type: Number,
+    default: 0
   },
   quantityOfTimesPlayed: {
-    type: Number
+    type: Number,
+    default: 0
   },
   rating: {
-    type: Number
+    type: Number,
+    default: 0
   },
   bestQuantityOfPlayers: {
     type: Number,
+    default: 0
   },
   artist: {
     type: [String],
