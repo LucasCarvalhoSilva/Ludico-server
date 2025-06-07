@@ -16,10 +16,6 @@ const campaingSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'rpgSystem'
   },
-  players:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'participator'
-  }],
   isOnline:{
     type:Boolean,
     required: true

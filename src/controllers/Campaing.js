@@ -18,7 +18,6 @@ class Campaing {
         .find()
         .populate('master')
         .populate('system')
-        .populate(["players"])
         .populate('characters')
         .exec();
       res.status(200).json(campaings);
@@ -35,7 +34,6 @@ class Campaing {
         .findById(campaingId)
         .populate('master')
         .populate('system')
-        .populate(["players"])
         .populate('characters')
         .exec();
       if (!foundCampaing) {
