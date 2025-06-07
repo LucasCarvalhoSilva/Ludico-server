@@ -8,7 +8,7 @@ class BoardGame {
       
       newBoardGame.playedTime = 0
       const createdBoardGame = await boardGame.create(newBoardGame);
-      res.status(200).json(createdBoardGame);
+      res.status(201).json(createdBoardGame);
     }catch(error) {
       res.status(500).json(error);
     }
