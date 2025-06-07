@@ -26,6 +26,11 @@ const scapeRoomHistorySchema = new Schema({
   },
   theme: {
     type: [String]
+  },
+  mode: {
+    type: String,
+    enum: ['online', 'presencial'],
+    required: [true, "O modo de jogo é obrigatório"]
   }
 })
 
