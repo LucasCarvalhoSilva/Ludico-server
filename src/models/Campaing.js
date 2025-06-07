@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const campaingSchema = new Schema({
   id: {type: mongoose.Schema.Types.ObjectId},
+  campaingName: {
+    type: String,
+    required: [true, "O nome da campanha é obrigatório"]
+  },
   master: {
     type: mongoose.Schema.Types.ObjectId,
     ref:'user'
