@@ -21,7 +21,9 @@ const userSchema = new Schema({
   },
   status: {
     type: String,
-    required: [true, "status é obrigatório"]
+    required: [true, "status é obrigatório"],
+    enum: ['active', 'inactive', 'banned'],
+    default: 'active'
   },
   password: {
     type: String,
