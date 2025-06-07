@@ -43,6 +43,7 @@ class Login {
 
       res.status(200).json({
         message: 'Login realizado com sucesso',
+        role: userLogIn.role.role,
         token
       })
     } catch(error) {

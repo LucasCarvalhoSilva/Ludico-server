@@ -21,12 +21,6 @@ const scapeRoomHistorySchema = new Schema({
     required: [true, "A quantidade minima de jogadores é obrigatória"],
     min: 0
   },
-  description: {
-    type: String
-  },
-  theme: {
-    type: [String]
-  },
   mode: {
     type: String,
     enum: ['online', 'presencial'],
