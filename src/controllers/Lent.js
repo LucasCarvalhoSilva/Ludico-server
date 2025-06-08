@@ -1,5 +1,6 @@
 import { lent } from "../models/index.js";
 import { boardGame } from "../models/index.js";
+import { participator } from "../models/index.js";
 import gameAvailable from "../utils/gameAvailable.js";
 import playedTime from "../utils/playedTime.js";
 
@@ -7,14 +8,23 @@ class Lent {
   static async createLent(req, res, next) {
     try {
       const newLent = req.body;
-      
+      const participatorIdentifier = req.body.participator;
+
       newLent.lentTime = new Date();
       newLent.status = "lent";
 
       const isBoardgameAvailable = await gameAvailable(newLent.boardgameLent);
       console.log("Jogo está disponivel: ", isBoardgameAvailable);
       
+
+
       if (isBoardgameAvailable) {
+        const participatorFound = await participator.findOne({ identifier: participatorIdentifier });
+        if (!participatorFound) {
+          return res.status(404).json({ message: "Participante não encontrado" });
+        }
+        newLent.participator = participatorFound._id;
+
         const createdLent = await lent.create(newLent);
         const boardGameFound = await boardGame.findById(newLent.boardgameLent);
         boardGameFound.isAvailable = !boardGameFound.isAvailable;
