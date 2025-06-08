@@ -14,6 +14,40 @@ class BoardGame {
     }
   }
 
+  static async returnBoardGame(req, res, next) {
+    try {
+      const boardGameId = req.body.boardGameId;
+
+      const boardGameFound = await boardGame.findById(boardGameId).populate(["expansions"]).exec();
+      if (!boardGameFound) {
+        return next(new NotFoundError("Boardgame não encontrado"));
+      }
+
+      boardGameFound.isAvailable = true;
+      await boardGameFound.save();
+
+      res.status(200).json(boardGameFound);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+  static async updateBoardGame(req, res, next) {
+    try {
+      const boardGameId = req.params.id;
+      const updatedData = req.body;
+
+      const updatedBoardGame = await boardGame.findByIdAndUpdate(boardGameId, updatedData, { new: true }).populate(["expansions"]).exec();
+      if (!updatedBoardGame) {
+        return next(new NotFoundError("Boardgame não encontrado"));
+      }
+      updatedBoardGame.save();
+      res.status(200).json(updatedBoardGame);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
   static async deleteBoardGame(req, res, next) {
     try{
       const  boardGameId  = req.params.id;

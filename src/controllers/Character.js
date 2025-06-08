@@ -1,11 +1,23 @@
 import { character } from "../models/index.js";
+import { campaing } from "../models/index.js";
 
 class Character {
   static async createCharacter(req, res, next) {
     try {
       const newCharacter = req.body;
 
+      const campaingId = req.body.campaing;
       const createdCharacter = await character.create(newCharacter);
+      if(createdCharacter) {
+        const campaingFound = await campaing.findById(campaingId);
+        if (!campaingFound) {
+          return res.status(404).json({ message: "Campanha não encontrada" });
+        }
+
+        campaingFound.characters.push(createdCharacter._id);
+        await campaingFound.save();
+      }
+
       res.status(200).json(createdCharacter);
     } catch (error) {
       res.status(500).json(error);
