@@ -15,9 +15,11 @@ class BoardGame {
   }
 
   static async returnBoardGame(req, res, next) {
+    console.log("returnBoardGame", req.body);
     try {
       const boardGameId = req.body.boardGameId;
 
+      console.log("boardGameId", boardGameId)
       const boardGameFound = await boardGame.findById(boardGameId).populate(["expansions"]).exec();
       if (!boardGameFound) {
         return next(new NotFoundError("Boardgame não encontrado"));
