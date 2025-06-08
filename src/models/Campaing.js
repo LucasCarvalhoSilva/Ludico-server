@@ -40,13 +40,16 @@ const campaingSchema = new Schema({
     type: Number,
     min: [10, "A idade minima deve ser superior a 10"]
   },
-  themes: {
-    type: [String]
+  theme: {
+    type: String
   },
   characters: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'character'
-  }]
+  }],
+  ticklish: {
+    type: String
+  },
 })
 
 const campaing = mongoose.model('campaing', campaingSchema)
